@@ -65,7 +65,7 @@ class CreatePlaylist:
         return response_json["id"]
 
     def get_spotify_uri(self, track, artist):
-        """Search for the song"""
+        """ Search for the song and return uri """
         query = f'https://api.spotify.com/v1/search?q=track%3A{track}+artist%3A{artist}&type=track&offset=0&limit=5'
         response = requests.get(
             query,
@@ -84,13 +84,13 @@ class CreatePlaylist:
         song_info = self.get_liked_video_info()
         song_uri = self.get_spotify_uri(song_info["track"], song_info["artist"])
         playlist_id = self.create_playlist()
-        request_data = {"uris": [song_uri], "position": 0}
+        request_data = {"uris":[song_uri], "position":0}
 
         query = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
 
         response = requests.post(
             query,
-            data=request_data,
+            data=json.dumps(request_data),
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {config.SPOTIFY_TOKEN}"
